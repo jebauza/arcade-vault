@@ -10,14 +10,19 @@ Arcade Vault — a platform for playing games online and competing for the highe
 
 Development follows Spec Driven Design using the `/spec` and `/spec-impl` commands from the [fernando-skills](https://github.com/Klerith/fernando-skills) skill pack (installed via `npx skills@latest add Klerith/fernando-skills`). Check for specs before implementing features they cover.
 
-## Commands
+## Stack
 
-- `npm run dev` — start the dev server (Next.js 16, Turbopack by default)
-- `npm run build` — production build
-- `npm run start` — run the production build
-- `npm run lint` — ESLint (flat config in `eslint.config.mjs`, extends `eslint-config-next` core-web-vitals + typescript)
+- Next.js 16.2.11 (App Router)
+- React 19.2.4 / React DOM 19.2.4
+- TypeScript 5
+- Tailwind CSS 4 (via `@tailwindcss/postcss`, CSS-first config)
+- ESLint 9 (`eslint-config-next`)
 
 No test runner is configured yet.
+
+## Skills
+
+Usa simpre /frontend-design para diseñar la interfaz de usuario.
 
 ## Architecture
 
