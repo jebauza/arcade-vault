@@ -100,7 +100,18 @@ type SavedScoreEntry = {
 
 Conventions:
 
-- IDs de juego en `kebab-case` en español (`bloque-buster`, `caida`, ...), tal como en el template — son contenido, no rutas del sistema.
+- IDs de juego en `kebab-case` en inglés (`brick-buster`, `drop`, `snake`, `glutton`, `invaders`, `asteroids`, `crossing`, `pixel-duel`), mientras que `title`/`short`/`long` permanecen en español. Mapeo respecto al template original (`data.jsx`, IDs en español):
+
+  | id template (ES) | id spec (EN) | title            |
+  | ----------------- | ------------ | ----------------- |
+  | `bloque-buster`   | `brick-buster` | BLOQUE BUSTER    |
+  | `caida`           | `drop`         | CAÍDA            |
+  | `serpentina`      | `snake`        | SERPENTINA       |
+  | `gloton`          | `glutton`      | GLOTÓN           |
+  | `invasores`       | `invaders`     | INVASORES        |
+  | `rocas`           | `asteroids`    | ROCAS            |
+  | `ranaria`         | `crossing`     | RANARIA          |
+  | `duelo-pixel`      | `pixel-duel`   | DUELO PIXEL      |
 - `seededScores` es determinista por `seed`, para que el detalle de un juego y su fila en el leaderboard sean reproducibles entre renders.
 
 ## Implementation plan
@@ -142,7 +153,7 @@ Conventions:
 
 - **Sí:** Migrar a rutas reales de Next.js App Router (`/`, `/games/[id]`, `/games/[id]/play`, `/auth`, `/leaderboard`) en vez de mantener el router por hash del template. Es lo idiomático en App Router y habilita navegación real (back/forward, deep links).
 - **No:** Mantener el router casero por hash de `app.jsx`. Reinventaría algo que Next.js ya resuelve.
-- **Sí:** Nombres de ruta en inglés (`games`, `play`, `auth`, `leaderboard`), pero contenido e IDs de juego en español, igual que el template. Separa la convención técnica del contenido de producto.
+- **Sí:** Nombres de ruta en inglés (`games`, `play`, `auth`, `leaderboard`) e IDs de juego también en inglés (`brick-buster`, `drop`, `snake`, `glutton`, `invaders`, `asteroids`, `crossing`, `pixel-duel`), mientras que el contenido (títulos, descripciones) permanece en español, igual que el template. Mantiene toda la URL en inglés y separa la convención técnica del contenido de producto.
 - **Sí:** Reusar `app/globals.css` tal como ya está migrado (variables, `.btn`, `.card`, `.crt`, etc.) y usar Tailwind solo para lo que falte. Evita re-derivar un sistema visual pixel/neón/CRT ya resuelto.
 - **Sí:** Mantener la simulación de puntuación automática del reproductor (opción b) en vez de un HUD completamente estático. Hace demostrable el flujo completo (jugar → fin → guardar) sin implementar un juego real.
 - **Sí:** Contexto de sesión cliente (`components/session-provider.tsx`) en vez de que cada página lea `localStorage` por su cuenta. `Nav` necesita reflejar el login/logout de forma reactiva entre navegaciones de cliente sin recargar la página.
