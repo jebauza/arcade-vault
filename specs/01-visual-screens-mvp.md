@@ -1,6 +1,6 @@
 # SPEC 01 — Pantallas visuales del MVP de Arcade Vault
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** —
 > **Date:** 2026-07-26
 > **Objective:** Implementar como rutas reales de Next.js App Router las cinco pantallas visuales de Arcade Vault (biblioteca, detalle de juego, reproductor simulado, autenticación y salón de la fama) migrando el diseño de `references/templates/`, con datos ficticios locales y persistencia en `localStorage`, sin implementar lógica de juego real.
@@ -124,7 +124,7 @@ Conventions:
 6. Implementar `app/auth/page.tsx` (Auth): tabs iniciar sesión / crear cuenta, formulario ficticio que llama a `login()` del contexto y redirige a `/`, botón "jugar como invitado" (`login(null)`), botones sociales decorativos sin acción. Prueba manual: loguearse y ver el nombre reflejado en el `Nav`.
 7. Implementar `app/games/[id]/play/page.tsx` (Reproductor): HUD, marco CRT con arena decorativa estática, simulación de puntuación por `setInterval` (igual que el template), pausa, fin de partida, modal para guardar puntuación (escribe en `localStorage` bajo `av_scores`). Prueba manual: jugar, pausar, terminar y guardar una puntuación.
 8. Implementar `app/leaderboard/page.tsx` (Salón de la fama): tabs por juego, podio top 3, tabla completa, fila destacada del usuario si hay sesión iniciada. Prueba manual: cambiar de tab y verificar que el podio y la tabla cambian.
-9. Revisión final: recorrer las 5 rutas, confirmar que `Nav` marca la ruta activa correctamente (incluida la relación `/games/[id]` y `/games/[id]/play` con el link "Biblioteca" inactivo, como en el template), que el panel móvil abre/cierra, y que no falta ninguna clase de `app/globals.css` usada por las pantallas.
+9. Revisión final: recorrer las 5 rutas, confirmar que `Nav` marca la ruta activa correctamente (incluida la relación `/games/[id]` y `/games/[id]/play` con el link "Biblioteca" activo, como en el template), que el panel móvil abre/cierra, y que no falta ninguna clase de `app/globals.css` usada por las pantallas.
 
 ## Acceptance criteria
 
