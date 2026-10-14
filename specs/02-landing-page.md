@@ -1,6 +1,6 @@
 # SPEC 02 — Landing page (Home)
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01
 > **Date:** 2026-10-06
 > **Objective:** Implementar la landing page en `/` migrando el `Home` de `references/templates/home-about/`, moviendo la biblioteca actual a `/games` y actualizando `Nav` y enlaces internos.
@@ -91,24 +91,24 @@ Conventions:
 
 ## Acceptance criteria
 
-- [ ] `/` muestra la landing con las 7 secciones en orden: Hero, ¿Por qué Arcade Vault?, Juegos disponibles, Stats, Actividad en vivo, Precios, CTA final.
-- [ ] `/games` muestra la biblioteca con buscador y chips de categoría funcionales (comportamiento de SPEC 01 intacto).
-- [ ] Ninguna ruta enlaza a `/` esperando la biblioteca: "Volver al Vault" en `/games/[id]` y los enlaces equivalentes en `/games/[id]/play` y `/leaderboard` navegan a `/games`.
-- [ ] "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS" e "INSERTAR MONEDA" navegan a `/games`.
-- [ ] "CREAR CUENTA" y "EMPEZAR GRATIS" navegan a `/auth`.
-- [ ] "VER SALÓN" navega a `/leaderboard`.
-- [ ] La sección "Juegos disponibles" muestra exactamente 6 `MiniCard` y cada clic navega a `/games/[id]` con el juego correcto.
-- [ ] El ticker muestra 7 filas y cada título de juego coincide con el `title` de `GAMES` según su `gameId`.
-- [ ] El top de jugadores muestra 5 filas; las 3 primeras tienen clases `top1`, `top2`, `top3`.
-- [ ] `Nav` muestra "Inicio", "Biblioteca" y "Salón de la Fama", y no muestra "Acerca de", en escritorio y en el panel móvil.
-- [ ] "Inicio" está activo solo en `/`; "Biblioteca" está activo en `/games`, `/games/[id]` y `/games/[id]/play`.
-- [ ] El logo de `Nav` navega a `/`.
-- [ ] Tras iniciar sesión en `/auth` y tras cerrar sesión desde `Nav`, el usuario termina en `/`.
-- [ ] Las secciones `.reveal` pasan a `.in` al entrar en el viewport al hacer scroll.
-- [ ] Con `prefers-reduced-motion: reduce`, todas las secciones `.reveal` son visibles sin hacer scroll.
-- [ ] La landing no tiene scroll horizontal en viewport de 375px de ancho.
-- [ ] `npm run build` y `npm run lint` terminan sin errores.
-- [ ] No hay errores en la consola del navegador al recorrer `/`, `/games`, `/games/[id]`, `/auth` y `/leaderboard`.
+- [x] `/` muestra la landing con las 7 secciones en orden: Hero, ¿Por qué Arcade Vault?, Juegos disponibles, Stats, Actividad en vivo, Precios, CTA final.
+- [x] `/games` muestra la biblioteca con buscador y chips de categoría funcionales (comportamiento de SPEC 01 intacto).
+- [x] Ninguna ruta enlaza a `/` esperando la biblioteca: "Volver al Vault" en `/games/[id]` y los enlaces equivalentes en `/games/[id]/play` y `/leaderboard` navegan a `/games`.
+- [x] "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS" e "INSERTAR MONEDA" navegan a `/games`.
+- [x] "CREAR CUENTA" y "EMPEZAR GRATIS" navegan a `/auth`.
+- [x] "VER SALÓN" navega a `/leaderboard`.
+- [x] La sección "Juegos disponibles" muestra exactamente 6 `MiniCard` y cada clic navega a `/games/[id]` con el juego correcto.
+- [x] El ticker muestra 7 filas y cada título de juego coincide con el `title` de `GAMES` según su `gameId`.
+- [x] El top de jugadores muestra 5 filas; las 3 primeras tienen clases `top1`, `top2`, `top3`.
+- [x] `Nav` muestra "Inicio", "Biblioteca" y "Salón de la Fama", y no muestra "Acerca de", en escritorio y en el panel móvil.
+- [x] "Inicio" está activo solo en `/`; "Biblioteca" está activo en `/games`, `/games/[id]` y `/games/[id]/play`.
+- [x] El logo de `Nav` navega a `/`.
+- [x] Tras iniciar sesión en `/auth` y tras cerrar sesión desde `Nav`, el usuario termina en `/`.
+- [x] Las secciones `.reveal` pasan a `.in` al entrar en el viewport al hacer scroll.
+- [x] Con `prefers-reduced-motion: reduce`, todas las secciones `.reveal` son visibles sin hacer scroll.
+- [x] La landing no tiene scroll horizontal en viewport de 375px de ancho.
+- [x] `npm run build` y `npm run lint` terminan sin errores.
+- [x] No hay errores en la consola del navegador al recorrer `/`, `/games`, `/games/[id]`, `/auth` y `/leaderboard`.
 
 ## Decisions
 
