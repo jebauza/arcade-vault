@@ -1,27 +1,33 @@
-'use server';
-
 import { Resend } from 'resend';
-
-export type ContactFormValues = {
-  name: string;
-  email: string;
-  message: string;
-};
-
-export type ContactFieldError = keyof ContactFormValues;
-
-export type ContactResult =
-  | { status: 'success'; name: string }
-  | { status: 'invalid'; fields: ContactFieldError[] }
-  | { status: 'error' };
+import type {
+  ContactFieldError,
+  ContactFormValues,
+  ContactResult,
+} from './types';
 
 const MAX_NAME_LENGTH = 80;
 const MAX_MESSAGE_LENGTH = 2000;
 const DEFAULT_FROM_EMAIL = 'onboarding@resend.dev';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const readField = (formData: FormData, key: string): string => {
-  const value = formData.get(key);
+const respond = (result: ContactResult, status: number): Response =>
+  Response.json(result, { status });
+
+const readBody = async (
+  request: Request,
+): Promise<Record<string, unknown>> => {
+  try {
+    const body: unknown = await request.json();
+    return typeof body === 'object' && body !== null && !Array.isArray(body)
+      ? (body as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const readField = (body: Record<string, unknown>, key: string): string => {
+  const value = body[key];
   return typeof value === 'string' ? value.trim() : '';
 };
 
@@ -39,36 +45,34 @@ const findInvalidFields = (values: ContactFormValues): ContactFieldError[] => {
   return invalid;
 };
 
-export async function sendContactMessage(
-  formData: FormData,
-): Promise<ContactResult> {
+export async function POST(request: Request): Promise<Response> {
+  const body = await readBody(request);
   const values: ContactFormValues = {
-    name: readField(formData, 'name'),
-    email: readField(formData, 'email'),
-    message: readField(formData, 'message'),
+    name: readField(body, 'name'),
+    email: readField(body, 'email'),
+    message: readField(body, 'message'),
   };
 
   // Honeypot: bots fill the hidden field. Pretend success, send nothing.
-  if (readField(formData, 'website') !== '') {
-    return { status: 'success', name: values.name };
+  if (readField(body, 'website') !== '') {
+    return respond({ status: 'success', name: values.name }, 200);
   }
 
   const invalid = findInvalidFields(values);
   if (invalid.length > 0) {
-    return { status: 'invalid', fields: invalid };
+    return respond({ status: 'invalid', fields: invalid }, 400);
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL;
   const from = process.env.RESEND_FROM_EMAIL || DEFAULT_FROM_EMAIL;
 
-  const missing = [
-    !apiKey && 'RESEND_API_KEY',
-    !to && 'CONTACT_TO_EMAIL',
-  ].filter(Boolean);
   if (!apiKey || !to) {
-    console.error(`Contact form: missing env vars: ${missing.join(', ')}`);
-    return { status: 'error' };
+    const missing = [!apiKey && 'RESEND_API_KEY', !to && 'CONTACT_TO_EMAIL'];
+    console.error(
+      `Contact form: missing env vars: ${missing.filter(Boolean).join(', ')}`,
+    );
+    return respond({ status: 'error' }, 500);
   }
 
   try {
@@ -81,12 +85,12 @@ export async function sendContactMessage(
     });
     if (error) {
       console.error('Contact form: Resend rejected the email', error);
-      return { status: 'error' };
+      return respond({ status: 'error' }, 500);
     }
   } catch (cause) {
     console.error('Contact form: failed to send the email', cause);
-    return { status: 'error' };
+    return respond({ status: 'error' }, 500);
   }
 
-  return { status: 'success', name: values.name };
+  return respond({ status: 'success', name: values.name }, 200);
 }

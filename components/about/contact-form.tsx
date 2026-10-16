@@ -1,13 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState, useTransition } from 'react';
-import { sendContactMessage } from '@/app/about/actions';
+import type {
+  ContactFormValues as FormValues,
+  ContactResult,
+} from '@/app/api/contact/types';
 
-type FormValues = {
-  name: string;
-  email: string;
-  message: string;
-};
+const CONTACT_ENDPOINT = '/api/contact';
 
 const EMPTY_VALUES: FormValues = { name: '', email: '', message: '' };
 const SHAKE_DURATION_MS = 400;
@@ -65,10 +64,18 @@ export function ContactForm(): React.ReactElement {
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
+    const website = new FormData(event.currentTarget).get('website');
     startTransition(async () => {
       try {
-        const result = await sendContactMessage(formData);
+        const response = await fetch(CONTACT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...values,
+            website: typeof website === 'string' ? website : '',
+          }),
+        });
+        const result = (await response.json()) as ContactResult;
         if (result.status === 'success') {
           setPhase({ kind: 'success', name: result.name || values.name.trim() });
         } else if (result.status === 'invalid') {
