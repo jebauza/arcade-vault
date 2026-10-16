@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
+import { sendContactMessage } from '@/app/about/actions';
 
 type FormValues = {
   name: string;
@@ -11,9 +12,24 @@ type FormValues = {
 const EMPTY_VALUES: FormValues = { name: '', email: '', message: '' };
 const SHAKE_DURATION_MS = 400;
 
+// Visually hidden but still in the DOM so bots fill it in.
+const HONEYPOT_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  left: '-9999px',
+  width: 1,
+  height: 1,
+  overflow: 'hidden',
+};
+
+type Phase =
+  | { kind: 'form' }
+  | { kind: 'success'; name: string }
+  | { kind: 'error' };
+
 export function ContactForm(): React.ReactElement {
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
-  const [sentName, setSentName] = useState<string | null>(null);
+  const [phase, setPhase] = useState<Phase>({ kind: 'form' });
+  const [isPending, startTransition] = useTransition();
   const [shake, setShake] = useState(false);
   const shakeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -39,16 +55,37 @@ export function ContactForm(): React.ReactElement {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const name = values.name.trim();
-    if (!name || !values.email.trim() || !values.message.trim()) {
+    if (isPending) return;
+    if (
+      !values.name.trim() ||
+      !values.email.trim() ||
+      !values.message.trim()
+    ) {
       triggerShake();
       return;
     }
-    setSentName(name);
+
+    const formData = new FormData(event.currentTarget);
+    startTransition(async () => {
+      try {
+        const result = await sendContactMessage(formData);
+        if (result.status === 'success') {
+          setPhase({ kind: 'success', name: result.name || values.name.trim() });
+        } else if (result.status === 'invalid') {
+          triggerShake();
+        } else {
+          setPhase({ kind: 'error' });
+        }
+      } catch {
+        setPhase({ kind: 'error' });
+      }
+    });
   };
 
+  const backToForm = (): void => setPhase({ kind: 'form' });
+
   const reset = (): void => {
-    setSentName(null);
+    setPhase({ kind: 'form' });
     setValues(EMPTY_VALUES);
   };
 
@@ -58,7 +95,7 @@ export function ContactForm(): React.ReactElement {
       onSubmit={handleSubmit}
       noValidate
     >
-      {sentName === null ? (
+      {phase.kind === 'form' ? (
         <>
           <div className="field">
             <label htmlFor="contact-name">NOMBRE</label>
@@ -92,10 +129,52 @@ export function ContactForm(): React.ReactElement {
               placeholder="Cuéntanos qué tienes en mente…"
             />
           </div>
-          <button className="btn xl press" type="submit" style={{ width: '100%' }}>
-            ▶ ENVIAR MENSAJE
+          <div style={HONEYPOT_STYLE} aria-hidden="true">
+            <label htmlFor="contact-website">WEBSITE</label>
+            <input
+              id="contact-website"
+              name="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              defaultValue=""
+            />
+          </div>
+          <button
+            className="btn xl press"
+            type="submit"
+            style={{ width: '100%' }}
+            disabled={isPending}
+          >
+            {isPending ? 'ENVIANDO…' : '▶ ENVIAR MENSAJE'}
           </button>
         </>
+      ) : phase.kind === 'error' ? (
+        <div className="terminal-success">
+          <div className="term-bar">
+            <span className="dot r" />
+            <span className="dot y" />
+            <span className="dot g" />
+            <span className="term-title">VAULT-OS // TERMINAL</span>
+          </div>
+          <div className="term-body">
+            <div className="line">
+              <span className="prompt">vault@arcade:~$</span> ./send_message
+              --to=team
+            </div>
+            <div className="line dim">[OK] Conectando con servidor…</div>
+            <div className="line err">[ERR] No se pudo transmitir el paquete.</div>
+            <div className="line success">
+              &gt; ERROR AL ENVIAR EL MENSAJE. INTÉNTALO DE NUEVO.
+              <span className="caret">_</span>
+            </div>
+            <div style={{ marginTop: 18 }}>
+              <button className="btn ghost" type="button" onClick={backToForm}>
+                REINTENTAR
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="terminal-success">
           <div className="term-bar">
@@ -114,7 +193,7 @@ export function ContactForm(): React.ReactElement {
             <div className="line dim">[OK] Transmitiendo paquete…</div>
             <div className="line success">
               &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS,{' '}
-              {sentName.toUpperCase()}.<span className="caret">_</span>
+              {phase.name.toUpperCase()}.<span className="caret">_</span>
             </div>
             <div style={{ marginTop: 18 }}>
               <button className="btn ghost" type="button" onClick={reset}>

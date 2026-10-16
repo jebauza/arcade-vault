@@ -1300,3 +1300,4 @@ a { color: inherit; text-decoration: none; }
 /* Hidden only once useReveal has mounted, so content stays visible without JS */
 .about.reveal-ready .reveal { opacity: 0; transform: translateY(24px); transition: opacity 600ms ease, transform 600ms ease; }
 .about.reveal-ready .reveal.in { opacity: 1; transform: none; }
+.term-body .err { color: #ff5f56; }
