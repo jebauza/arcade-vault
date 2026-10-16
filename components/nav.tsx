@@ -11,7 +11,7 @@ export function Nav() {
   const router = useRouter();
   const { user, logout } = useSession();
 
-  const isActive = (href: '/' | '/games' | '/leaderboard' | '/auth') => {
+  const isActive = (href: '/' | '/games' | '/leaderboard' | '/about' | '/auth') => {
     if (href === '/games') {
       return pathname === '/games' || pathname.startsWith('/games/');
     }
@@ -47,6 +47,9 @@ export function Nav() {
             className={isActive('/leaderboard') ? 'active' : ''}
           >
             Salón de la Fama
+          </Link>
+          <Link href="/about" className={isActive('/about') ? 'active' : ''}>
+            Acerca de
           </Link>
         </div>
         <div className="spacer"></div>
@@ -96,6 +99,13 @@ export function Nav() {
           onClick={close}
         >
           Salón de la Fama
+        </Link>
+        <Link
+          href="/about"
+          className={isActive('/about') ? 'active' : ''}
+          onClick={close}
+        >
+          Acerca de
         </Link>
         {user ? (
           <a
