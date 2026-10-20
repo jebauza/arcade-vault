@@ -1,6 +1,6 @@
 # SPEC 04 — Integración base con Supabase
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01, SPEC 02, SPEC 03
 > **Date:** 2026-10-19
 > **Objective:** Instalar y configurar los clientes de Supabase para navegador y servidor (`@supabase/ssr`) como infraestructura base de los specs futuros de autenticación, base de datos, realtime y edge functions.
@@ -41,17 +41,17 @@ Este spec no introduce ningún modelo de datos persistente. Los clientes de Supa
 
 ## Acceptance criteria
 
-- [ ] `package.json` lista `@supabase/supabase-js` y `@supabase/ssr` como dependencias.
-- [ ] `.env.example` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` sin valores.
-- [ ] `.env.local` existe con valores reales y `git status` no lo muestra.
-- [ ] Existen `lib/supabase/client.ts`, `lib/supabase/server.ts`, `lib/supabase/env.ts` y `lib/supabase/types.ts`.
-- [ ] `npx tsc --noEmit` termina sin errores.
-- [ ] `npm run build` termina sin errores.
-- [ ] `npm run lint` termina sin errores.
-- [ ] `GET /api/health/supabase` responde HTTP 200 con `{"status":"ok"}` con las variables configuradas.
-- [ ] `GET /api/health/supabase` responde HTTP 500 con `{"status":"error"}` si falta `NEXT_PUBLIC_SUPABASE_URL`, sin exponer el mensaje de error en el cuerpo.
-- [ ] La clave `service_role` no aparece en el repositorio (`grep -ri service_role` sin resultados fuera de `specs/`).
-- [ ] `/`, `/games`, `/auth`, `/leaderboard` y `/about` se ven y funcionan igual que antes (el login fake sigue funcionando).
+- [x] `package.json` lista `@supabase/supabase-js` y `@supabase/ssr` como dependencias.
+- [x] `.env.example` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` sin valores.
+- [x] `.env.local` existe con valores reales y `git status` no lo muestra.
+- [x] Existen `lib/supabase/client.ts`, `lib/supabase/server.ts`, `lib/supabase/env.ts` y `lib/supabase/types.ts`.
+- [x] `npx tsc --noEmit` termina sin errores.
+- [x] `npm run build` termina sin errores.
+- [x] `npm run lint` termina sin errores.
+- [x] `GET /api/health/supabase` responde HTTP 200 con `{"status":"ok"}` con las variables configuradas.
+- [x] `GET /api/health/supabase` responde HTTP 500 con `{"status":"error"}` si falta `NEXT_PUBLIC_SUPABASE_URL`, sin exponer el mensaje de error en el cuerpo.
+- [x] La clave `service_role` no aparece en el repositorio (`grep -ri service_role` sin resultados fuera de `specs/`).
+- [x] `/`, `/games`, `/auth`, `/leaderboard` y `/about` se ven y funcionan igual que antes (el login fake sigue funcionando).
 
 ## Decisions
 
